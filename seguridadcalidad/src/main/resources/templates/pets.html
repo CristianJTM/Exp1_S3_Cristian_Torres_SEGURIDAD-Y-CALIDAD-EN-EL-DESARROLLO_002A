@@ -9,8 +9,8 @@
 <div class="page-container">
     <h1>Mascotas en adopcion</h1>
     <div class="actions">
-        <a class="btn btn-primary" th:href="@{/pets/new}">Registrar mascota</a>
-        <a class="btn btn-secondary" th:href="@{/home}">Volver a inicio</a>
+        <a id="btnRegistrarMascotas" class="btn btn-primary" th:href="@{/pets/new}" style="display: none;">Registrar mascota</a>
+        <a class="btn btn-secondary" id="btn" th:href="@{/home}">Volver a inicio</a>
     </div>
 
     <form id="searchForm" class="patient-form" style="margin-bottom: 1rem;">
@@ -65,7 +65,7 @@
                 <th>Genero</th>
                 <th>Ubicacion</th>
                 <th>Estado</th>
-                <th>Acciones</th>
+                <th id="columnAcciones" style="display: none;">Acciones</th>
             </tr>
             </thead>
             <tbody id="petsTableBody">
@@ -76,6 +76,15 @@
 </div>
 
 <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('jwtToken');
+
+    if (token) {
+        document.getElementById('btnRegistrarMascotas').style.display = 'inline-block';
+        document.getElementById('columnAcciones').style.display = 'table-cell';
+    }});
+
     let currentPets = [];
 
     function getToken() {
@@ -117,6 +126,11 @@
         return '';
     }
 
+    function isLogged() {
+        return !!localStorage.getItem('jwtToken');
+    }
+
+
     function renderPets(pets) {
         const tbody = document.getElementById('petsTableBody');
         tbody.innerHTML = '';
@@ -132,6 +146,23 @@
             const isAdopted = pet.status === 'adopted';
             const cannotAdopt = isAdopted || isUnavailable;
             const cannotSetUnavailable = isUnavailable || isAdopted;
+            let accionesColumn = '';
+
+            if (isLogged()) {
+                accionesColumn =
+                    '<td>' +
+                        '<button class="btn btn-primary" type="button" ' +
+                            'onclick="markAsAdopted(' + pet.id + ')" ' +
+                            (cannotAdopt ? 'disabled' : '') +
+                        '>Adoptar</button> ' +
+                        '<button class="btn btn-secondary" type="button" ' +
+                            'onclick="markAsUnavailable(' + pet.id + ')" ' +
+                            (cannotSetUnavailable ? 'disabled' : '') +
+                        '>No disponible</button> ' +
+                        '<button class="btn btn-secondary" type="button" onclick="deletePet(' + pet.id + ')">Eliminar</button>' +
+                    '</td>';
+            }
+
             const row = document.createElement('tr');
             row.innerHTML =
                 '<td>' + escapeHtml(pet.id) + '</td>' +
@@ -147,17 +178,8 @@
                 '<td>' + escapeHtml(pet.gender) + '</td>' +
                 '<td>' + escapeHtml(pet.location || '-') + '</td>' +
                 '<td>' + escapeHtml(pet.status || 'available') + '</td>' +
-                '<td>' +
-                    '<button class="btn btn-primary" type="button" ' +
-                        'onclick="markAsAdopted(' + Number(pet.id) + ')" ' +
-                        (cannotAdopt ? 'disabled' : '') +
-                    '>Adoptar</button> ' +
-                    '<button class="btn btn-secondary" type="button" ' +
-                        'onclick="markAsUnavailable(' + Number(pet.id) + ')" ' +
-                        (cannotSetUnavailable ? 'disabled' : '') +
-                    '>No disponible</button> ' +
-                    '<button class="btn btn-secondary" type="button" onclick="deletePet(' + Number(pet.id) + ')">Eliminar</button>' +
-                '</td>';
+    accionesColumn;
+
             tbody.appendChild(row);
         });
     }
@@ -222,6 +244,7 @@
         }
 
         const payload = { ...selectedPet, status: 'adopted' };
+        console.log("Payload enviado (ADOPTED):", payload);
 
         try {
             const response = await fetch('/api/pets/' + id, {
@@ -265,6 +288,7 @@
         }
 
         const payload = { ...selectedPet, status: 'unavailable' };
+        console.log("Payload enviado (UNAVAILABLE):", payload);
 
         try {
             const response = await fetch('/api/pets/' + id, {

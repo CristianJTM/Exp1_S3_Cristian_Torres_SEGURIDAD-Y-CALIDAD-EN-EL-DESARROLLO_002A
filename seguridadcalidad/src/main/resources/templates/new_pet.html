@@ -67,6 +67,14 @@
 </div>
 
 <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('jwtToken');
+
+    if (!token) {
+        window.location.href = '/login';
+    }});
+
     function updatePhotoPreview() {
         const photoUrl = document.getElementById('photoUrl').value.trim();
         const preview = document.getElementById('photoPreview');

@@ -27,7 +27,11 @@ class WebSecurityConfig{
                 .authorizeHttpRequests( authz -> authz
                         .requestMatchers(HttpMethod.POST, Constants.LOGIN_URL).permitAll()
                         .requestMatchers(HttpMethod.GET, Constants.LOGIN_URL).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/pets").permitAll()
                         .requestMatchers(HttpMethod.GET, "/pets/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/pets").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/pets/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/pets/**").authenticated()
                         .anyRequest().authenticated())
                 .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
