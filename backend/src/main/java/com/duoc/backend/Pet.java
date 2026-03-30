@@ -7,6 +7,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import java.util.List;
 
 @Entity
@@ -15,13 +20,28 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 50, message = "Máximo 50 caracteres")
     private String name;
+
+    @NotBlank(message = "La especie es obligatoria")
+    @Size(max = 30)
     private String species;
+
+    @Size(max = 50)
     private String breed;
+
+    @Min(value = 0, message = "Edad no puede ser negativa")
+    @Max(value = 50, message = "Edad fuera de rango")
     private Integer age;
+
+    @Size(max = 50)
     private String gender;
+
+    @Size(max = 50)
     private String location;
 
+    @Size(max = 100)
     @ElementCollection
     @CollectionTable(name = "pet_photos")
     @Column(name = "photo_url")

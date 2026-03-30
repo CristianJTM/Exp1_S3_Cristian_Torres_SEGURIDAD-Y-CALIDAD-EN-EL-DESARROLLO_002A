@@ -4,6 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,10 +18,20 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @NotNull(message = "El ID del paciente es obligatorio")
+    @Min(value = 1, message = "El ID debe ser mayor a 0")
     private Integer patientId;
+
+    @NotNull(message = "La fecha es obligatoria")
     private LocalDate date;
+
+    @NotNull(message = "La hora es obligatoria")
     private LocalTime time;
+
+    @Size(max = 50)
     private String reason;
+
+    @Size(max = 50)
     private String veterinarian;
 
     public Appointment() {}

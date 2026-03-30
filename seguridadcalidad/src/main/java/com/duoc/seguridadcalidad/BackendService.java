@@ -12,10 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class BackendService {
@@ -83,7 +80,12 @@ public class BackendService {
             return response;
         } catch (HttpStatusCodeException ex) {
             log.error("Backend createPatient failed status={} body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
-            throw ex;
+
+            Map<String, Object> error = new HashMap<>();
+            error.put("status", ex.getStatusCode().value());
+            error.put("error", ex.getResponseBodyAsString());
+
+            return error;
         }
     }
 
@@ -121,7 +123,11 @@ public List<Map<String, Object>> getAppointments(String jwtToken) {
             return response;
         } catch (HttpStatusCodeException ex) {
             log.error("Backend createAppointment failed status={} body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
-            throw ex;
+
+            Map<String, Object> error = new HashMap<>();
+            error.put("status", ex.getStatusCode().value());
+            error.put("error", ex.getResponseBodyAsString());
+            return error;
         }
     }
 
@@ -207,7 +213,13 @@ public List<Map<String, Object>> getAppointments(String jwtToken) {
             return response;
         } catch (HttpStatusCodeException ex) {
             log.error("Backend createPet failed status={} body={}", ex.getStatusCode(), ex.getResponseBodyAsString());
-            throw ex;
+
+
+            Map<String, Object> error = new HashMap<>();
+            error.put("status", ex.getStatusCode().value());
+            error.put("error", ex.getResponseBodyAsString());
+
+            return error;
         }
     }
 

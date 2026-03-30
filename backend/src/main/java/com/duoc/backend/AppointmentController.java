@@ -1,5 +1,7 @@
 package com.duoc.backend;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +23,7 @@ public class AppointmentController {
     private PatientRepository patientRepository;
 
     @PostMapping
-    public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment) {
+    public ResponseEntity<?> createAppointment(@Valid @RequestBody Appointment appointment) {
         try {
             if (appointment.getPatientId() == null || !patientRepository.existsById(appointment.getPatientId())) {
                 return ResponseEntity.badRequest().body("Patient not found for patientId: " + appointment.getPatientId());
@@ -72,7 +74,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateAppointment(@PathVariable Integer id, @RequestBody Appointment appointment) {
+    public ResponseEntity<String> updateAppointment(@PathVariable @Min(1) Integer id,@Valid @RequestBody Appointment appointment) {
         try {
             if (!appointmentRepository.existsById(id)) {
                 return ResponseEntity.notFound().build();

@@ -4,6 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Patient {
@@ -11,10 +15,23 @@ public class Patient {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 50, message = "Máximo 50 caracteres")
     private String name;
+
+    @NotBlank(message = "La especie es obligatoria")
+    @Size(max = 30)
     private String species;
+
+    @Size(max = 50)
     private String breed;
+
+    @Min(value = 0, message = "Edad no puede ser negativa")
+    @Max(value = 50, message = "Edad fuera de rango")
     private Integer age;
+
+    @NotBlank
+    @Size(max = 50)
     private String owner;
 
     // Constructors

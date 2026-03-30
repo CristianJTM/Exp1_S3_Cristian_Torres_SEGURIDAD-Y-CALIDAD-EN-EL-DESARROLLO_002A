@@ -1,5 +1,7 @@
 package com.duoc.backend;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,7 @@ public class PetController {
     private PetRepository petRepository;
 
     @PostMapping("/pets")
-    public ResponseEntity<?> createPet(@RequestBody Pet pet) {
+    public ResponseEntity<?> createPet(@Valid @RequestBody Pet pet) {
         try {
             petRepository.save(pet);
             return ResponseEntity.status(HttpStatus.CREATED).body(pet);
@@ -70,7 +72,7 @@ public class PetController {
     }
 
     @PutMapping("/pets/{id}")
-    public ResponseEntity<?> updatePet(@PathVariable Integer id, @RequestBody Pet petDetails) {
+    public ResponseEntity<?> updatePet(@PathVariable @Min(1) Integer id, @Valid @RequestBody Pet petDetails) {
         try {
             Optional<Pet> pet = petRepository.findById(id);
             if (pet.isPresent()) {

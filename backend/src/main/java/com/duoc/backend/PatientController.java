@@ -1,5 +1,6 @@
 package com.duoc.backend;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class PatientController {
     private PatientRepository patientRepository;
 
     @PostMapping("/patients")
-    public ResponseEntity<?> createPatient(@RequestBody Patient patient) {
+    public ResponseEntity<?> createPatient(@Valid @RequestBody Patient patient) {
         try {
             patientRepository.save(patient);
             return ResponseEntity.status(HttpStatus.CREATED).body(patient);
