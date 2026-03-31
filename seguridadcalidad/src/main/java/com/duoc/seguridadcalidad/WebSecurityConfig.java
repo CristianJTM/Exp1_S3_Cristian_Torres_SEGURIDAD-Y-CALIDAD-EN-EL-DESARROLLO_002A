@@ -33,9 +33,32 @@ public class WebSecurityConfig {
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/home").permitAll()
                 .requestMatchers("/login", "/api/auth/**").permitAll()
-                .requestMatchers("/**.css").permitAll()
+                .requestMatchers("/css/**" , "/js/**").permitAll()
                 .requestMatchers("/api/**").permitAll() // /api/ endpoints are validated in controller (token forwarded to backend)
                 .anyRequest().permitAll()
+            )
+            .headers(headers -> headers
+                    .contentSecurityPolicy(csp -> csp
+                            .policyDirectives(
+                                    "default-src 'self'; " +
+                                            "script-src 'self'; " +
+                                            "style-src 'self'; " +
+                                            "img-src 'self' data:; " +
+                                            "font-src 'self'; " +
+                                            "connect-src 'self'; " +
+                                            "form-action 'self'; " +
+                                            "frame-ancestors 'none'; " +
+                                            "base-uri 'self'; " +
+                                            "object-src 'none'; " +
+                                            "media-src 'self'; " +
+                                            "frame-src 'none';"
+                            )
+                    )
+                    .contentTypeOptions(withDefaults -> {})
+                    .frameOptions(frame -> frame.deny())
+                    .addHeaderWriter((request, response) -> {
+                        response.setHeader("X-Content-Type-Options", "nosniff");
+                    })
             )
             .formLogin((form) -> form
                 .loginPage("/login")

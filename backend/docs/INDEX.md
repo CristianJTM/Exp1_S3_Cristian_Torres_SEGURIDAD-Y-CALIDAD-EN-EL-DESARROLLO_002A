@@ -36,7 +36,7 @@ fetch('docs/api-spec.json')
   .then(r => r.json())
   .then(spec => {
     spec.endpoints.forEach(ep => {
-      console.log(`${ep.method} ${ep.path}: ${ep.summary}`);
+      
     });
   });
 ```

@@ -33,6 +33,18 @@ class WebSecurityConfig{
                         .requestMatchers(HttpMethod.PUT, "/pets/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/pets/**").authenticated()
                         .anyRequest().authenticated())
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp
+                                .policyDirectives(
+                                        "default-src 'self'; " +
+                                                "script-src 'self'; " +
+                                                "style-src 'self' 'unsafe-inline'; " +
+                                                "img-src 'self' data:; " +
+                                                "font-src 'self';"
+                                )
+                        )
+                        .frameOptions(frame -> frame.deny())
+                )
                 .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

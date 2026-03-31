@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Home - Seguridad y Calidad</title>
-    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/home.js}" defer></script>
 </head>
 <body>
     <div class="page-container home-page">
@@ -23,27 +24,6 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const token = localStorage.getItem('jwtToken');
 
-            if (token) {
-                // Usuario Logeado
-                document.getElementById('btnPatients').style.display = 'inline-block';
-                document.getElementById('btnAppointments').style.display = 'inline-block';
-                document.getElementById('btnPets').style.display = 'inline-block';
-                document.getElementById('btnLogout').style.display = 'inline-block';
-            } else {
-                // Usuario No Logeado
-                document.getElementById('btnPets').style.display = 'inline-block';
-                document.getElementById('btnLogin').style.display = 'inline-block';
-            }
-
-            document.getElementById('btnLogout').addEventListener('click', function() {
-                localStorage.removeItem('jwtToken');
-                window.location.reload();
-            });
-        });
-    </script>
 </body>
 </html>

@@ -3,7 +3,9 @@
 <head>
     <title>Lista de Pacientes</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+
+    <script type="text/javascript" th:src="@{/js/patients.js}" defer></script>
 </head>
 <body>
 <div class="page-container">
@@ -30,51 +32,6 @@
         </table>
     </div>
 </div>
-<script>
-    async function loadPatients() {
-        console.log('-> Frontend: loadPatients called');
-        const token = localStorage.getItem('jwtToken');
-        if (!token) {
-            console.warn('No JWT token found, redirecting to login');
-            window.location.href = '/login';
-            return;
-        }
 
-        try {
-            console.log('-> Frontend: GET /api/patients');
-            const response = await fetch('/api/patients', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            console.log('<- Frontend: GET /api/patients status=' + response.status);
-
-            if (response.status === 401 || response.status === 403) {
-                localStorage.removeItem('jwtToken');
-                window.location.href = '/login';
-                return;
-            }
-
-            const patients = await response.json();
-            console.log('<- Frontend: GET /api/patients body=', patients);
-            const tbody = document.getElementById('patientsTableBody');
-            tbody.innerHTML = '';
-
-            if (!patients.length) {
-                tbody.innerHTML = '<tr><td colspan="6">No hay pacientes registrados.</td></tr>';
-                return;
-            }
-
-            patients.forEach(patient => {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>${patient.id}</td><td>${patient.name}</td><td>${patient.species}</td><td>${patient.breed}</td><td>${patient.age}</td><td>${patient.owner}</td>`;
-                tbody.appendChild(row);
-            });
-        } catch (error) {
-            console.error('Frontend: GET /api/patients error=', error.message, error.stack);
-            document.getElementById('patientsTableBody').innerHTML = '<tr><td colspan="6">Error cargando pacientes.</td></tr>';
-        }
-    }
-
-    loadPatients();
-</script>
 </body>
 </html>

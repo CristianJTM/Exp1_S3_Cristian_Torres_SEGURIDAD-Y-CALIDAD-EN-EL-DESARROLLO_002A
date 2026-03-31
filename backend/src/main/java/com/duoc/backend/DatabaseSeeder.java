@@ -42,6 +42,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         if (userRepository.count() == 0) {
             String hash = passwordEncoder.encode(seedPassword);
             userRepository.save(new User("admin", "admin@admin.cl", hash));
+            userRepository.save(new User("user", "user@user.cl", hash));
+            userRepository.save(new User("vet", "vet@vet.cl", hash));
         }
 
         // Mascotas
